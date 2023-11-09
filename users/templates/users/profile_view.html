@@ -1,0 +1,28 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}Perfil{% endblock title %}
+
+{% block header %}
+<header class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+      <div class="text-center my-5">
+        <img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
+            <h1 class="text-white fs-3 fw-bolder">{{request.user.username}}</h1>
+      </div>
+    </div>
+  </header>
+{% endblock header %}
+
+
+{% block content %}
+<section class="py-5">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2>Biografía</h2>
+                <p class="lead">{{request.user.biography}}</p>
+            </div>
+        </div>
+    </div>
+</section>
+    {% endblock content %}

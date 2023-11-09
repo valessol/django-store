@@ -1,0 +1,17 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}Registro{% endblock title %}
+
+{% block header_title %}Registrarse{% endblock header_title %}
+
+{% block header_subtitle %}{% endblock header_subtitle %}
+
+{% block content %}
+<form action={% url "register" %} method="POST">
+    {% csrf_token %}
+    <table>
+        {{form}}
+    </table>
+    <input type="submit" value="Registrarse">
+</form>
+{% endblock content %}
