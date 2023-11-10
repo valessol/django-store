@@ -9,107 +9,50 @@
 {% block content %}
     <div class="container">
       <div class="row">
+        {% if entries_list %}
         <!-- Blog entries-->
         <div class="col-lg-8">
+          {% for entry in entries_list %}
+          {% if entry.outstanding %}
           <!-- Featured blog post-->
           <div class="card mb-4">
             <a href="#!"
-              ><img
-                class="card-img-top"
-                src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg"
-                alt="..."
+            ><img
+            class="card-img-top"
+            src={{entry.image}}
+            alt={{entry.title}}
             /></a>
             <div class="card-body">
-              <div class="small text-muted">January 1, 2023</div>
-              <h2 class="card-title">Featured Post Title</h2>
+              <div class="small text-muted">{{entry.created_at}}</div>
+              <h2 class="card-title">{{entry.title}}</h2>
               <p class="card-text">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a
-                laboriosam. Dicta expedita corporis animi vero voluptate
-                voluptatibus possimus, veniam magni quis!
+                {{entry.review | safe}}
               </p>
-              <a class="btn btn-primary" href="#!">Read more →</a>
+              <a class="btn btn-primary" href="#!">Leer más →</a>
             </div>
           </div>
+          {% endif %}
           <!-- Nested row for non-featured blog posts-->
           <div class="row">
-            <div class="col-lg-6">
+            
               <!-- Blog post-->
-              <div class="card mb-4">
-                <a href="#!"
+              <div class="col-lg-6 card mb-4">
+                <a href={% url 'entry' %}
                   ><img
                     class="card-img-top"
-                    src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                    alt="..."
+                    src={{entry.image}}
+                    alt={{entry.title}}
                 /></a>
                 <div class="card-body">
-                  <div class="small text-muted">January 1, 2023</div>
-                  <h2 class="card-title h4">Post Title</h2>
+                  <div class="small text-muted">{{entry.created_at}}</div>
+                  <h2 class="card-title h4">{{entry.title}}</h2>
                   <p class="card-text">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Reiciendis aliquid atque, nulla.
+                    {{entry.review}}
                   </p>
-                  <a class="btn btn-primary" href="#!">Read more →</a>
+                  <a class="btn btn-primary" href="#!">Leer más →</a>
                 </div>
               </div>
-              <!-- Blog post-->
-              <div class="card mb-4">
-                <a href="#!"
-                  ><img
-                    class="card-img-top"
-                    src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                    alt="..."
-                /></a>
-                <div class="card-body">
-                  <div class="small text-muted">January 1, 2023</div>
-                  <h2 class="card-title h4">Post Title</h2>
-                  <p class="card-text">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Reiciendis aliquid atque, nulla.
-                  </p>
-                  <a class="btn btn-primary" href="#!">Read more →</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <!-- Blog post-->
-              <div class="card mb-4">
-                <a href="#!"
-                  ><img
-                    class="card-img-top"
-                    src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                    alt="..."
-                /></a>
-                <div class="card-body">
-                  <div class="small text-muted">January 1, 2023</div>
-                  <h2 class="card-title h4">Post Title</h2>
-                  <p class="card-text">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Reiciendis aliquid atque, nulla.
-                  </p>
-                  <a class="btn btn-primary" href="#!">Read more →</a>
-                </div>
-              </div>
-              <!-- Blog post-->
-              <div class="card mb-4">
-                <a href="#!"
-                  ><img
-                    class="card-img-top"
-                    src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                    alt="..."
-                /></a>
-                <div class="card-body">
-                  <div class="small text-muted">January 1, 2023</div>
-                  <h2 class="card-title h4">Post Title</h2>
-                  <p class="card-text">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a
-                    laboriosam.
-                  </p>
-                  <a class="btn btn-primary" href="#!">Read more →</a>
-                </div>
-              </div>
-            </div>
+            {% endfor %} 
           </div>
           <!-- Pagination-->
           <nav aria-label="Pagination">
@@ -135,8 +78,16 @@
             </ul>
           </nav>
         </div>
+        {% else %}
+        <div class="col-lg-8">
+            <p class="lead fw-normal text-muted mb-5">No se encontraron entradas para mostrar.</p>
+        </div>
+        {% endif %}
         <!-- Side widgets-->
         <div class="col-lg-4">
+          <div class='mb-4'>
+            <a class="btn btn-primary" href={% url "create_entry" %}>+ Nueva Entrada</a>
+          </div>
           <!-- Search widget-->
           <div class="card mb-4">
             <div class="card-header">Search</div>

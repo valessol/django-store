@@ -6,3 +6,13 @@
               <a class="nav-link active" aria-current="page" href="#">Blog</a>
             </li>
          -->
+
+1. crear la app python manage.py startapp name
+2. añadirla al settings.py
+3. Crear el modelo
+4. Agragar la app al archivo de urls.py general (core)
+5. Añadir la app al admin de la misma
+6. Crear el archivo de urls.py añadiendo el path, vista y name 
+7. Añadir la vista
+8. Añadir el template
+
