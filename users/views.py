@@ -6,7 +6,7 @@ from users.models import UserData
 
 def login(request):
     form = AuthenticationForm()
-    
+    # crear un form que herede del AuthenticationAForm para pisar los labels
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -33,7 +33,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 def profile_view(request):
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/profile_view.html')
 
 def profile_edit(request):
     ...
