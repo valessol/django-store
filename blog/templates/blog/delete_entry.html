@@ -1,12 +1,12 @@
 {% extends 'blog_base.html' %}
 
-{% block title %}Nueva Entrada{% endblock title %}
+{% block title %}Eliminar Entrada{% endblock title %}
 
 {% block header %}{% endblock header %}
 
 {% block content %}
    <header class="container mt-5 mb-4">
-        <h1 class="fw-bolder mb-1">Nueva entrada de Blog</h1> 
+        <h1 class="fw-bolder mb-1">Eliminar entrada</h1> 
     </header>
     
     <main class="container mt-5 mb-4">
@@ -14,11 +14,8 @@
             <div class="col-lg-8 col-xl-6">
                 <form action='' method="POST" >
                     {% csrf_token %}
-                    <table>
-                        {{form.media}}
-                        {{form}}
-                    </table>
-                    <div class="d-grid"><input class="btn btn-primary btn-lg" type="submit" value='Agregar'/></div>
+                    <p>¿Desea eliminar la entrada <span class='text-bold'>{{blogentry.title}}</span>?</p>
+                    <div class="d-grid"><input class="btn btn-primary btn-lg" type="submit" value='Confirmar'/></div>
                 </form>
             </div>
         </div>

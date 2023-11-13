@@ -28,7 +28,7 @@
               <p class="card-text">
                 {{entry.review | safe}}
               </p>
-              <a class="btn btn-primary" href="#!">Leer más →</a>
+              <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
             </div>
           </div>
           {% endif %}
@@ -49,7 +49,7 @@
                   <p class="card-text">
                     {{entry.review}}
                   </p>
-                  <a class="btn btn-primary" href="#!">Leer más →</a>
+                  <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
                 </div>
               </div>
             {% endfor %} 
@@ -92,22 +92,17 @@
           <div class="card mb-4">
             <div class="card-header">Search</div>
             <div class="card-body">
-              <div class="input-group">
-                <input
+                <form action={% url "entries" %} class="input-group">
+                  <input
                   class="form-control"
                   type="text"
-                  placeholder="Enter search term..."
-                  aria-label="Enter search term..."
+                  name="search"
+                  placeholder="Ingrese búsqueda"
+                  aria-label="Ingrese búsqueda"
                   aria-describedby="button-search"
                 />
-                <button
-                  class="btn btn-primary"
-                  id="button-search"
-                  type="button"
-                >
-                  Go!
-                </button>
-              </div>
+                  <input type="submit" class="btn btn-primary" value="Buscar" />
+                </form>
             </div>
           </div>
           <!-- Categories widget-->
