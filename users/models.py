@@ -1,17 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class UserData(models.Model): 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     username = models.CharField(max_length=50)
-    entries = models.IntegerField()
-    comments = models.IntegerField()
-    biography = models.CharField(max_length=300)
-    avatar = models.ImageField(upload_to='avatares', null=True, blank=True)
-
-# import uuid
-
-# myUUID = uuid.uuid4()
-# print(type(myUUID))
-# print(myUUID)
-# myUUIDString = str(myUUID)
-# print(type(myUUIDString))
-# print(myUUIDString)
+    entries = models.IntegerField(default=0)
+    comments = models.IntegerField(default=0)
+    biography = models.CharField(max_length=300, default='')
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True, default='')

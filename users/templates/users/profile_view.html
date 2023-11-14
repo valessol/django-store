@@ -6,14 +6,17 @@
 <header class="py-5 bg-light border-bottom mb-4">
     <div class="container">
       <div class="text-center my-5">
-        <img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
-            <div class="d-flex align-items-center justify-content-center">
-            <h1 class="fs-3 fw-bolder mx-2 mb-0">{{request.user.username}}</h1>
-            <a href={% url "profile_edit" %}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-                  </svg>
-            </a></div>
+        {% if request.user.userdata.avatar %}
+            <img class="img-fluid rounded-circle mb-4" src={{request.user.userdata.avatar.url}} alt="user avatar" />
+        {% else %}
+            <img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
+        {% endif %}
+        <h1 class="fs-3 fw-bolder mx-2 mb-0">{{request.user.username}}</h1>
+        <div class="d-flex align-items-center justify-content-center">
+            <a href={% url "profile_edit" %} class='text-decoration-none text-black-50 m-2'>EDITAR</a>
+            <span> | </span>
+            <a href={% url "change_password" %} class='text-decoration-none text-black-50 m-2 '>CAMBIAR CONTRASEÑA</a>
+        </div>
       </div>
     </div>
   </header>
@@ -21,12 +24,14 @@
 
 
 {% block content %}
-<section class="py-5">
+<section class="">
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <h2>Biografía</h2>
-                <p class="lead">{{request.user.biography}}</p>
+                <p class="lead">{{request.user.userdata.biography}}</p>
+                <h2>Tus datos</h2>
+                
             </div>
         </div>
     </div>

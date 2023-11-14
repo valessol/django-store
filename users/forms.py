@@ -15,10 +15,10 @@ class RegisterForm(UserCreationForm):
     
 class EditForm(UserChangeForm):
     password = None
-    email = forms.EmailField(label='Cambiar email', required=False)
-    username = forms.CharField(label='Cambiar nombre de usuario', required=False)
-    biography= forms.CharField(max_length=300, required=False, widget=forms.Textarea)
-    avatar = forms.ImageField(required=False)
+    email = forms.EmailField(label='Email', required=False)
+    username = forms.CharField(label='Nombre de usuario', required=False)
+    biography= forms.CharField(label='Biografía', max_length=300, required=False, widget=forms.Textarea)
+    avatar = forms.ImageField(label='Avatar', required=False)
     
     class Meta:
         model = User
