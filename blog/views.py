@@ -15,7 +15,7 @@ class EntriesList(ListView):
     def get_queryset(self):
         search = self.request.GET.get('search', '')
         if search:
-            entries_list = self.model.objects.filter(title__icontains=title)
+            entries_list = self.model.objects.filter(title__icontains=search)
         else:
             entries_list = self.model.objects.all()
         return entries_list
