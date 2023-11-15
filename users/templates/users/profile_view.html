@@ -7,15 +7,15 @@
     <div class="container">
       <div class="text-center my-5">
         {% if request.user.userdata.avatar %}
-            <img class="img-fluid rounded-circle mb-4" src={{request.user.userdata.avatar.url}} alt="user avatar" />
+            <img class="rounded-circle mb-4" height="150" width="150" src={{request.user.userdata.avatar.url}} alt="avatar" />
         {% else %}
-            <img class="img-fluid rounded-circle mb-4" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
+            <img class="rounded-circle mb-4" height="150" with="150" src="https://dummyimage.com/150x150/6c757d/dee2e6.jpg" alt="..." />
         {% endif %}
         <h1 class="fs-3 fw-bolder mx-2 mb-0">{{request.user.username}}</h1>
         <div class="d-flex align-items-center justify-content-center">
-            <a href={% url "profile_edit" %} class='text-decoration-none text-black-50 m-2'>EDITAR</a>
+            <a href={% url "profile_edit" %} class='icon-link icon-link-hover text-decoration-none text-black-50 m-2' style="--bs-link-hover-color-rgb: 25, 135, 84;">EDITAR</a>
             <span> | </span>
-            <a href={% url "change_password" %} class='text-decoration-none text-black-50 m-2 '>CAMBIAR CONTRASEÑA</a>
+            <a href={% url "change_password" %} class='icon-link icon-link-hover text-decoration-none text-black-50 m-2 '>CAMBIAR CONTRASEÑA</a>
         </div>
       </div>
     </div>
@@ -29,8 +29,24 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <h2>Biografía</h2>
-                <p class="lead">{{request.user.userdata.biography}}</p>
-                <h2>Tus datos</h2>
+                {% if request.user.userdata.biography %}
+                    <p class="lead">{{request.user.userdata.biography}}</p>
+                {% else %}
+                    <p class="lead"><a href={% url "profile_edit" %} class="text-decoration-none text-black-50">Añadir biografía</a></p>
+                {% endif %}
+                <h2>Tu actividad</h2>
+                <div>
+                    <span class="fw-bold">Nombre de usuario: </span>
+                    <span class="fw-light text-uppercase">{{request.user.username}}</span>
+                </div>
+                <div>
+                    <span class="fw-bold">Entradas: </span>
+                    <span class="fw-light text-uppercase">{{request.user.userdata.entries}}</span>
+                </div>
+                <div>
+                    <span class="fw-bold">Comentarios: </span>
+                    <span class="fw-light text-uppercase">{{request.user.userdata.comments}}</span>
+                </div>
                 
             </div>
         </div>
