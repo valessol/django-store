@@ -46,10 +46,13 @@ def profile_edit(request):
         if form.is_valid():
             biography = form.cleaned_data.get('biography')
             avatar = form.cleaned_data.get('avatar')
+            remove_avatar = request.POST.get('avatar-clear')
             if biography:
                 user_data.biography = biography
             if avatar:
                 user_data.avatar = avatar
+            if remove_avatar:
+                user_data.avatar = ''
             user_data.save()
             form.save()
             return redirect('profile_view')
