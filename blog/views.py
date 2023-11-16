@@ -5,8 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
-from blog.models import BlogEntry
-from blog.forms import CreateEntryForm, EditEntryForm
+from blog.models import BlogEntry, Comment
+from blog.forms import CreateEntryForm, EditEntryForm, AddCommentForm
 from users.models import UserData
 
 class EntriesList(ListView):
@@ -83,10 +83,29 @@ def entry_view(request, pk):
     entry = BlogEntry.objects.get(id=pk)
     is_owner = request.user.username == entry.userdata.username
     related_entries = BlogEntry.objects.filter(category=entry.category)
+    
+    # form = AddCommentForm()
+    
+    if request.method == 'POST':
+    #     form = AddCommentForm(request.POST)
+    #     if form.is_valid():
+    #         cleaned_data = form.cleaned_data
+        comment = request.POST.get('comment')
+        blogentry = entry
+        userdata = UserData.objects.filter(user__username=request.user)[0]
+        new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
+        new_comment.save()
+        
+    comments = Comment.objects.all()
 
-    return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries})
+    return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments})
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
     model = BlogEntry
     template_name = 'blog/delete_entry.html'
+    success_url = reverse_lazy('')
+    
+class DeleteComment(LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/delete_comment.html'
     success_url = reverse_lazy('')

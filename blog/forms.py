@@ -1,6 +1,6 @@
 from django import forms
 from ckeditor.fields import RichTextFormField
-from blog.models import BlogEntry
+from blog.models import BlogEntry, Comment
 
 class CreateEntryForm(forms.Form):
     title = forms.CharField(label='Título')
@@ -20,3 +20,10 @@ class EditEntryForm(forms.Form):
     class Meta:
         model = BlogEntry
         fields = ['title', 'description', 'image']
+        
+class AddCommentForm(forms.Form):
+    comment = forms.Textarea()
+    
+    class Meta:
+        model = Comment
+        fields = ['comment']

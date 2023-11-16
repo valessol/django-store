@@ -13,9 +13,3 @@ class BlogEntry(models.Model):
     review = models.CharField(max_length=50, default='')
     category = models.CharField(max_length=50, verbose_name='Categoría')
     created_at = models.DateField(default=date.today)
-
-class Comment(models.Model):
-    blogentry = models.ForeignKey(BlogEntry, on_delete=models.CASCADE)
-    userdata = models.ForeignKey(UserData, on_delete=models.CASCADE)
-    comment = models.TextField()
-    created_at = models.DateField(default=date.today)
