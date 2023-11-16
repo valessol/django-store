@@ -5,15 +5,17 @@ from datetime import date
 from users.models import UserData
 
 class BlogEntry(models.Model):
+    userdata = models.ForeignKey(UserData, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, verbose_name='Título')
     description = RichTextField(verbose_name='Descripción')
     image = models.ImageField(verbose_name='Imagen', upload_to='entries', null=True, blank=True, default='')
     outstanding = models.BooleanField(default=False, verbose_name='Destacar')
     review = models.CharField(max_length=50, default='')
     category = models.CharField(max_length=50, verbose_name='Categoría')
-    user = models.OneToOneField(UserData, on_delete=models.CASCADE)
     created_at = models.DateField(default=date.today)
 
 class Comment(models.Model):
+    blogentry = models.ForeignKey(BlogEntry, on_delete=models.CASCADE)
+    userdata = models.ForeignKey(UserData, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateField(default=date.today)

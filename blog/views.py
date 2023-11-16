@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+
 from blog.models import BlogEntry
-from blog.forms import CreateEntryForm
+from blog.forms import CreateEntryForm, EditEntryForm
 from users.models import UserData
-from django.contrib.auth.models import User
-# Class-based views
 
 class EntriesList(ListView):
     model = BlogEntry
@@ -17,26 +15,16 @@ class EntriesList(ListView):
     template_name = 'blog/index.html'
     
     def get_queryset(self):
-        print('------  entries list view  ------')
         search = self.request.GET.get('search', '')
         if search:
             entries_list = self.model.objects.filter(title__icontains=search)
         else:
             entries_list = self.model.objects.all()
-        print(entries_list)
-        print('------------')
         return entries_list
-
-class CreateEntry(LoginRequiredMixin, CreateView):
-    model = BlogEntry
-    template_name = 'blog/create_entry.html'
-    fields = ['title', 'description', 'image', 'category']
-    success_url = reverse_lazy('')
     
 @login_required
 def create_entry(request):
     form = CreateEntryForm()
-    print('-----> user?', request.user)
     if request.method == 'POST':
         form = CreateEntryForm(request.POST, request.FILES)
         if form.is_valid():
@@ -46,37 +34,57 @@ def create_entry(request):
             title = cleaned_data.get('title')
             image = cleaned_data.get('image')
             category = cleaned_data.get('category')
-            user = UserData.objects.filter(username=request.user)
-            print(user.get('user'))
+            userdata = UserData.objects.filter(user__username=request.user)[0]
             entry = BlogEntry(
                 title=title, 
                 description=description, 
                 image=image, 
                 review=review, 
                 category=category, 
-                user_id=request.user.userdata.user_id
+                userdata=userdata
             )
             entry.save()
             
-            user_data = request.user.userdata
-            user_data.entries += 1
-            user_data.save()
-            # entries_list = BlogEntry.objects.all()
-            # print(entries_list)
-            # return redirect('entries', {'entries_list': entries_list})
+            userdata.entries += 1
+            userdata.save()
             return redirect('entries')
     return render(request, 'blog/create_entry.html', {'form': form})
+
+@login_required
+def edit_entry(request, pk):
+    logged_user = UserData.objects.filter(user__username=request.user)[0]
+    entry = BlogEntry.objects.get(id=pk)
     
-class EditEntry(LoginRequiredMixin, UpdateView):
-    model = BlogEntry
-    template_name = 'blog/edit_entry.html'
-    fields = ['title', 'description', 'image', 'category']
-    success_url = reverse_lazy('')
+    if logged_user == entry.userdata:
+        form = EditEntryForm(initial={'title': entry.title, 'description': entry.description, 'image': entry.image})
+        
+        if request.method == 'POST':
+            form = EditEntryForm(request.POST, request.FILES)
+            if form.is_valid():
+                cleaned_data = form.cleaned_data
+                description = cleaned_data.get('description')
+                image = cleaned_data.get('image')
+                remove_image = request.POST.get('image-clear')
+                
+                if description:
+                    entry.description = description
+                    entry.review = description[:48] + '...'
+                if image:
+                    entry.image = image
+                if remove_image:
+                    entry.image = ''
+ 
+                entry.title = cleaned_data.get('title')
+                entry.save()
+                return redirect('entries')
+        return render(request, 'blog/edit_entry.html', {'form': form, 'entry_id': pk})
     
-class EntryView(DetailView):
-    model = BlogEntry
-    context_object_name = 'entry'
-    template_name = 'blog/entry_view.html'
+def entry_view(request, pk):
+    entry = BlogEntry.objects.get(id=pk)
+    is_owner = request.user.username == entry.userdata.username
+    related_entries = BlogEntry.objects.filter(category=entry.category)
+
+    return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries})
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
     model = BlogEntry

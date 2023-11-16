@@ -11,3 +11,12 @@ class CreateEntryForm(forms.Form):
     class Meta:
         model = BlogEntry
         fields = ['title', 'description', 'image', 'category']
+        
+class EditEntryForm(forms.Form):
+    title = forms.CharField(label='Título', required=False)
+    description = RichTextFormField(label='Descripción', required=False)
+    image = forms.ImageField(label='Imagen', required=False)
+    
+    class Meta:
+        model = BlogEntry
+        fields = ['title', 'description', 'image']
