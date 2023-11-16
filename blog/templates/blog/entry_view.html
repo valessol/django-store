@@ -11,12 +11,16 @@
             <article>
                 <header class="mb-4">
                     <h1 class="fw-bolder mb-1">{{entry.title}}</h1>
-                    <div class="text-muted fst-italic mb-2">Creado el {{entry.created_at}} por USER{{entry.user_id}}</div>
+                    <div class="text-muted fst-italic mb-2">{{entry.created_at}} por {{entry.user}}</div>
                     <!-- Post categories-->
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{entry.category}}</a>
                 </header>
                 <!-- Preview image figure-->
-                <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                {% if entry.image %}
+                    <figure class="mb-4">
+                        <img class="img-fluid rounded" src={{entry.image.url}} alt={{entry.title}} />
+                    </figure>
+                {% endif %}
                 <!-- Post content-->
                 <section class="mb-5">
                     <p class="fs-5 mb-4">{{entry.description | safe}}</p>
@@ -67,6 +71,10 @@
         </div>
         <!-- Side widgets-->
         <div class="col-lg-4">
+
+                <div class='mb-4'>
+                  <a class="btn btn-primary" href={% url "edit_entry" entry.id %}>Editar Entrada</a>
+            </div>
             <!-- Search widget-->
             <div class="card mb-4">
                 <div class="card-header">Search</div>

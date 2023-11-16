@@ -19,8 +19,8 @@ def login(request):
             
             django_login(request, user)
             UserData.objects.get_or_create(user=request.user)
+            print('userdata', UserData.objects.all())          
             return redirect('entries')
-              
     return render(request, 'users/login.html', {'form': form})
 
 def register(request): 

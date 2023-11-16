@@ -16,12 +16,14 @@
           {% if entry.outstanding %}
           <!-- Featured blog post-->
           <div class="card mb-4">
-            <a href="#!"
-            ><img
-            class="card-img-top"
-            src={{entry.image}}
-            alt={{entry.title}}
-            /></a>
+            {% if entry.image %}
+              <a href={% url "entry" entry.id %}
+              ><img
+              class="card-img-top"
+              src={{entry.image.url}}
+              alt={{entry.title}}
+              /></a>
+            {% endif %}
             <div class="card-body">
               <div class="small text-muted">{{entry.created_at}}</div>
               <h2 class="card-title">{{entry.title}}</h2>
@@ -34,10 +36,9 @@
           {% endif %}
           <!-- Nested row for non-featured blog posts-->
           <div class="row">
-            
               <!-- Blog post-->
               <div class="col-lg-6 card mb-4">
-                <a href={% url 'entry' %}
+                <a href={% url "entry" entry.id %}
                   ><img
                     class="card-img-top"
                     src={{entry.image}}
@@ -60,7 +61,7 @@
             <ul class="pagination justify-content-center my-4">
               <li class="page-item disabled">
                 <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
-                  >Newer</a
+                  ><<<</a
                 >
               </li>
               <li class="page-item active" aria-current="page">
@@ -73,7 +74,7 @@
               </li>
               <li class="page-item"><a class="page-link" href="#!">15</a></li>
               <li class="page-item">
-                <a class="page-link" href="#!">Older</a>
+                <a class="page-link" href="#!">>>></a>
               </li>
             </ul>
           </nav>
