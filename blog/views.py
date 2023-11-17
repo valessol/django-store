@@ -1,11 +1,13 @@
+from typing import Any
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
-from blog.models import BlogEntry, Comment
+from blog.models import BlogEntry
+from comments.models import Comment
 from blog.forms import CreateEntryForm, EditEntryForm, AddCommentForm
 from users.models import UserData
 
@@ -22,39 +24,63 @@ class EntriesList(ListView):
             entries_list = self.model.objects.all()
         return entries_list
     
-@login_required
-def create_entry(request):
-    form = CreateEntryForm()
-    if request.method == 'POST':
-        form = CreateEntryForm(request.POST, request.FILES)
-        if form.is_valid():
-            cleaned_data = form.cleaned_data
-            review = cleaned_data.get('description')[:48] + '...'
-            description = cleaned_data.get('description')
-            title = cleaned_data.get('title')
-            image = cleaned_data.get('image')
-            category = cleaned_data.get('category')
-            userdata = UserData.objects.filter(user__username=request.user)[0]
-            entry = BlogEntry(
-                title=title, 
-                description=description, 
-                image=image, 
-                review=review, 
-                category=category, 
-                userdata=userdata
-            )
-            entry.save()
+class CreateEntry(LoginRequiredMixin, FormView):
+    template_name = 'blog/create_entry.html'
+    form_class = CreateEntryForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        description = cleaned_data.get('description')
+        title = cleaned_data.get('title')
+        image = cleaned_data.get('image')
+        category = cleaned_data.get('category')
+        userdata = UserData.objects.filter(user__username=self.request.user)[0]
+        entry = BlogEntry(
+            title=title, 
+            description=description, 
+            image=image, 
+            category=category, 
+            userdata=userdata
+        )
+        entry.save()
+        
+        userdata.entries += 1
+        userdata.save()
+        return super().form_valid(form)
+    
+    
+# @login_required
+# def create_entry(request):
+#     form = CreateEntryForm()
+#     if request.method == 'POST':
+#         form = CreateEntryForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             cleaned_data = form.cleaned_data
+#             description = cleaned_data.get('description')
+#             title = cleaned_data.get('title')
+#             image = cleaned_data.get('image')
+#             category = cleaned_data.get('category')
+#             userdata = UserData.objects.filter(user__username=request.user)[0]
+#             entry = BlogEntry(
+#                 title=title, 
+#                 description=description, 
+#                 image=image, 
+#                 category=category, 
+#                 userdata=userdata
+#             )
+#             entry.save()
             
-            userdata.entries += 1
-            userdata.save()
-            return redirect('entries')
-    return render(request, 'blog/create_entry.html', {'form': form})
+#             userdata.entries += 1
+#             userdata.save()
+#             return redirect('entries')
+#     return render(request, 'blog/create_entry.html', {'form': form})
 
 @login_required
 def edit_entry(request, pk):
     logged_user = UserData.objects.filter(user__username=request.user)[0]
     entry = BlogEntry.objects.get(id=pk)
-    
+
     if logged_user == entry.userdata:
         form = EditEntryForm(initial={'title': entry.title, 'description': entry.description, 'image': entry.image})
         
@@ -65,10 +91,9 @@ def edit_entry(request, pk):
                 description = cleaned_data.get('description')
                 image = cleaned_data.get('image')
                 remove_image = request.POST.get('image-clear')
-                
+
                 if description:
                     entry.description = description
-                    entry.review = description[:48] + '...'
                 if image:
                     entry.image = image
                 if remove_image:
@@ -91,21 +116,68 @@ def entry_view(request, pk):
     #     if form.is_valid():
     #         cleaned_data = form.cleaned_data
         comment = request.POST.get('comment')
+        print(comment)
         blogentry = entry
         userdata = UserData.objects.filter(user__username=request.user)[0]
         new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
         new_comment.save()
         
+        userdata.comments += 1
+        userdata.save()
+        
     comments = Comment.objects.all()
 
     return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments})
+
+class EntryView(FormView):
+    template_name = 'blog/entry_view.html'
+    form_class = AddCommentForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        description = cleaned_data.get('description')
+        title = cleaned_data.get('title')
+        image = cleaned_data.get('image')
+        category = cleaned_data.get('category')
+        userdata = UserData.objects.filter(user__username=self.request.user)[0]
+        entry = BlogEntry(
+            title=title, 
+            description=description, 
+            image=image, 
+            category=category, 
+            userdata=userdata
+        )
+        entry.save()
+        
+        userdata.entries += 1
+        userdata.save()
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        entry = BlogEntry.objects.get(id=self.kwargs.get('pk'))
+        context['entry'] = entry
+        context['is_owner '] = self.request.user.username == entry.userdata.username
+        context['related_entries'] = BlogEntry.objects.filter(category=entry.category)
+        context['comments'] = Comment.objects.all()
+
+        return context
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
     model = BlogEntry
     template_name = 'blog/delete_entry.html'
-    success_url = reverse_lazy('')
+    success_url = reverse_lazy('entries')
     
-class DeleteComment(LoginRequiredMixin, DeleteView):
-    model = Comment
-    template_name = 'blog/delete_comment.html'
-    success_url = reverse_lazy('')
+    def dispatch(self, *args, **kwargs):
+        if self.request.method == 'POST':
+            userdata = UserData.objects.filter(user__username=self.request.user)[0]
+            
+            if userdata.entries:
+                userdata.entries -= 1 
+            else:
+                userdata.entries = 0
+            userdata.save()
+            
+        return super().dispatch(*args, **kwargs)
+    

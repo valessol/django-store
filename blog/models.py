@@ -1,7 +1,10 @@
+import re
+from datetime import date
+
 from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
-from datetime import date
+
 from users.models import UserData
 
 class BlogEntry(models.Model):
@@ -13,3 +16,14 @@ class BlogEntry(models.Model):
     review = models.CharField(max_length=50, default='')
     category = models.CharField(max_length=50, verbose_name='Categoría')
     created_at = models.DateField(default=date.today)
+    
+    def save(self, *args, **kwargs):
+        regex_pattern = re.compile(r'<.*?>')
+        self.review = re.sub(regex_pattern, '', self.description)[:48] + '...'
+        print('description', self.description)
+        print('review', self.review)
+        super().save(*args, **kwargs)
+    
+    def get_review(description):
+        regex_pattern = re.compile(r'<.*?>')
+        return re.sub(regex_pattern, '', description)[:48] + '...'

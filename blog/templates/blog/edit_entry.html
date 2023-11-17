@@ -18,9 +18,10 @@
                         {{form.media}}
                         {{form}}
                     </table>
-                    <div class="d-flex justify-content-center mb-2 g-2">
+                    <div class="d-flex justify-content-center m-2 g-2">
                         <input type="submit" class="btn btn-primary mx-2" value="Actualizar">
                         <a href={% url "entry" entry_id %} class="btn btn-secondary">Cancelar</a>
+                        <a href={% url "delete_entry" entry_id %} class="btn btn-danger mx-2">Eliminar</a>
                     </div>
                 </form>
             </div>

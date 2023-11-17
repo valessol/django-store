@@ -14,7 +14,7 @@
             <div class="col-lg-8 col-xl-6">
                 <form action='' method="POST" >
                     {% csrf_token %}
-                    <p>¿Desea eliminar la entrada <span class='text-bold'>{{blogentry.title}}</span>?</p>
+                    <p>¿Desea eliminar la entrada <span class='fw-bold'>{{blogentry.title}}</span>?</p>
                     <div class="d-grid"><input class="btn btn-primary btn-lg" type="submit" value='Confirmar'/></div>
                 </form>
             </div>

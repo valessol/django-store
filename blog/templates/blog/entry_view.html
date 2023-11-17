@@ -34,7 +34,9 @@
                         {% if request.user.is_authenticated %}
                             <form class="mb-4" action="" method="POST">
                                 {% csrf_token %}
-                                <textarea class="form-control" name="comment" rows="3" placeholder="Únete a la discusión!"></textarea>
+                                <table>
+                                    {{form}}
+                                </table>
                                 <input type="submit" class="btn btn-primary m-2" value="Enviar">
                             </form>
                         {% else %}
@@ -71,8 +73,10 @@
                                     {{comment.comment}}
                                     <div class="d-flex">
                                         <a href="" class="text-muted mx-2">Responder</a>
-                                        <span> | </span>
-                                        <a href="" class="text-muted mx-2">Eliminar</a>
+                                        {% if comment.userdata.user.username == request.user.username %}
+                                            <span> | </span>
+                                            <a href={% url "delete_comment" comment.id %} class="text-muted mx-2">Eliminar</a>
+                                        {% endif %}
                                     </div>
                                     {% comment %} <!-- Child comment 1-->
                                     <div class="d-flex mt-4">

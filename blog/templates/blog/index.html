@@ -7,82 +7,82 @@
 {% block header_subtitle %}Todas las novedades sobre el framework de Python en un solo lugar{% endblock header_subtitle %}
 
 {% block content %}
-    <div class="container">
       <div class="row">
         {% if entries_list %}
-        <!-- Blog entries-->
-        <div class="col-lg-8">
-          {% for entry in entries_list %}
-          {% if entry.outstanding %}
-          <!-- Featured blog post-->
-          <div class="card mb-4">
-            {% if entry.image %}
-              <a href={% url "entry" entry.id %}
-              ><img
-              class="card-img-top"
-              src={{entry.image.url}}
-              alt={{entry.title}}
-              /></a>
-            {% endif %}
-            <div class="card-body">
-              <div class="small text-muted">{{entry.created_at}}</div>
-              <h2 class="card-title">{{entry.title}}</h2>
-              <p class="card-text">
-                {{entry.review | safe}}
-              </p>
-              <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
-            </div>
-          </div>
-          {% endif %}
-          <!-- Nested row for non-featured blog posts-->
-          <div class="row">
-              <!-- Blog post-->
-              <div class="col-lg-6 card mb-4">
-                <a href={% url "entry" entry.id %}
-                  ><img
-                    class="card-img-top"
-                    src={{entry.image}}
-                    alt={{entry.title}}
-                /></a>
-                <div class="card-body">
-                  <div class="small text-muted">{{entry.created_at}}</div>
-                  <h2 class="card-title h4">{{entry.title}}</h2>
-                  <p class="card-text">
-                    {{entry.review}}
-                  </p>
-                  <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
+          <!-- Blog entries-->
+          <div class="col-lg-8">
+            <div class="row gap-4">
+              {% for entry in entries_list %}
+                {% if entry.outstanding %}
+                  <!-- Featured blog post-->
+                  <div class="col-lg-12 card mb-4">
+                    {% if entry.image %}
+                      <a href={% url "entry" entry.id %}
+                      ><img
+                      class="card-img-top"
+                      src={{entry.image.url}}
+                      alt={{entry.title}}
+                      /></a>
+                    {% endif %}
+                    <div class="card-body">
+                      <div class="small text-muted">{{entry.created_at}}</div>
+                      <h2 class="card-title">{{entry.title}}</h2>
+                      <p class="card-text">
+                        {{entry.review}}
+                      </p>
+                      <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
+                    </div>
+                  </div>
+                {% endif %}
+                <!-- Blog post-->
+                <div class="col-lg-5 card mb-4">
+                  <a href={% url "entry" entry.id %}
+                    ><img
+                      class="card-img-top mt-2 rounded"
+                      src={{entry.image.url}}
+                      height="180"
+                      width="290"
+                      alt={{entry.title}}
+                  /></a>
+                  <div class="card-body">
+                    <div class="small text-muted">{{entry.created_at}}</div>
+                    <h2 class="card-title h4">{{entry.title}}</h2>
+                    <p>
+                      {{entry.review}}
+                    </p>
+                    <a class="btn btn-primary" href={% url "entry" entry.id %}>Leer más →</a>
+                  </div>
                 </div>
-              </div>
-            {% endfor %} 
+              {% endfor %} 
+            </div>
+            <!-- Pagination-->
+            {% comment %} <nav aria-label="Pagination">
+              <hr class="my-0" />
+              <ul class="pagination justify-content-center my-4">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
+                    ><<<</a
+                  >
+                </li>
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="#!">1</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#!">...</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#!">>>></a>
+                </li>
+              </ul>
+            </nav> {% endcomment %}
           </div>
-          <!-- Pagination-->
-          <nav aria-label="Pagination">
-            <hr class="my-0" />
-            <ul class="pagination justify-content-center my-4">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
-                  ><<<</a
-                >
-              </li>
-              <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#!">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#!">2</a></li>
-              <li class="page-item"><a class="page-link" href="#!">3</a></li>
-              <li class="page-item disabled">
-                <a class="page-link" href="#!">...</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#!">15</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#!">>>></a>
-              </li>
-            </ul>
-          </nav>
-        </div>
         {% else %}
-        <div class="col-lg-8">
-            <p class="lead fw-normal text-muted mb-5">No se encontraron entradas para mostrar.</p>
-        </div>
+          <div class="col-lg-8">
+              <p class="lead fw-normal text-muted mb-5">No se encontraron entradas para mostrar.</p>
+          </div>
         {% endif %}
         <!-- Side widgets-->
         <div class="col-lg-4">
@@ -138,5 +138,4 @@
           </div>
         </div>
       </div>
-    </div>
-    {% endblock content %}
+{% endblock content %}

@@ -14,8 +14,8 @@
             <div class="col-lg-8 col-xl-6">
                 <form action='' method="POST" >
                     {% csrf_token %}
-                    <p>¿Está seguro de que desea eliminar el comentario?</p>
-                    <div class="d-grid"><input class="btn btn-primary btn-lg" type="submit" value='Confirmar'/></div>
+                    <p>¿Está seguro de que desea eliminar el comentario en la entrada "{{entry.title}}"?</p>
+                    <div class="d-grid"><input class="btn btn-primary" type="submit" value='Confirmar'/></div>
                 </form>
             </div>
         </div>
