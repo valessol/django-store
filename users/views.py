@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from users.forms import RegisterForm, EditForm, LoginForm
 from users.models import UserData
 from blog.models import BlogEntry
+from comments.models import Comment
 
 def login(request):
     form = LoginForm()
@@ -39,7 +40,13 @@ def register(request):
 def profile_view(request):
     userdata = UserData.objects.filter(user=request.user)
     entries = BlogEntry.objects.filter(userdata=userdata[0])
-    return render(request, 'users/profile_view.html', {'entries': entries})
+    comments = Comment.objects.filter(userdata=userdata[0])
+    commented_entries = []
+    for comment in comments:
+        entry = comment.blogentry
+        commented_entries.append(entry)
+        
+    return render(request, 'users/profile_view.html', {'entries': entries, 'commented_entries': commented_entries})
 
 def profile_edit(request):
     user_data = request.user.userdata
@@ -70,10 +77,11 @@ class ProfileDelete(LoginRequiredMixin, DeleteView):
     template_name = 'users/profile_delete.html'
     success_url = reverse_lazy('entries')
     
-    def delete(self, request, *args, **kwargs):
-        user = User.objects.filter(id=self.kwargs.get('pk'))
-        logout(request)
-        user.delete()
+    def dispatch(self, *args, **kwargs):
+        if self.request.method == 'POST':
+            user = User.objects.filter(id=self.kwargs.get('pk'))
+            logout(self.request)
+            user.delete()
         
-        return super().delete()
+        return super().dispatch(*args, **kwargs)
 
