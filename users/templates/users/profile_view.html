@@ -44,11 +44,15 @@
                 <div>
                     <span class="fw-bold">Entradas: </span>
                     <span class="fw-light text-uppercase">{{request.user.userdata.entries}}</span>
+                    {% if entries %}
                     <ul>
                         {% for entry in entries %}
                             <li><a href={% url "entry" entry.id %}>{{entry.title}}</a></li>
                         {% endfor %}
                     </ul>
+                    {% else %}
+                        <p>Aún no has escrito ninguna entrada</p>
+                    {% endif %}
                 </div>
                 <div>
                     <span class="fw-bold">Comentarios: </span>
