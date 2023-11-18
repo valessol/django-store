@@ -16,6 +16,8 @@
             <a href={% url "profile_edit" %} class='icon-link icon-link-hover text-decoration-none text-black-50 m-2' style="--bs-link-hover-color-rgb: 25, 135, 84;">EDITAR</a>
             <span> | </span>
             <a href={% url "change_password" %} class='icon-link icon-link-hover text-decoration-none text-black-50 m-2 '>CAMBIAR CONTRASEÑA</a>
+            <span> | </span>
+            <a href={% url "profile_delete" request.user.id %} class='icon-link icon-link-hover text-decoration-none text-black-50 m-2 '>ELIMINAR CUENTA</a>
         </div>
       </div>
     </div>
@@ -42,6 +44,11 @@
                 <div>
                     <span class="fw-bold">Entradas: </span>
                     <span class="fw-light text-uppercase">{{request.user.userdata.entries}}</span>
+                    <ul>
+                        {% for entry in entries %}
+                            <li><a href={% url "entry" entry.id %}>{{entry.title}}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
                 <div>
                     <span class="fw-bold">Comentarios: </span>

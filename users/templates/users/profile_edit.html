@@ -7,16 +7,19 @@
 {% block header_subtitle %}{% endblock header_subtitle %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <form action={% url "profile_edit" %} method="POST" enctype="multipart/form-data" class="col-lg-6">
-        {% csrf_token %}
-        <table class="mb-2">
-            {{form}}
-        </table>
-        <div class="d-flex justify-content-center mb-2 g-2">
-            <input type="submit" class="btn btn-primary mx-2" value="Actualizar">
-            <a href={% url "profile_view" %} class="btn btn-secondary">Cancelar</a>
+    <form action={% url "profile_edit" %} method="POST" class="row m-5" enctype="multipart/form-data">
+        <div class="col-8 m-auto">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <label for="" class="fw-bold mt-2 mb-1">{{field.label}}:</label>
+                    {{field}}
+                </div>
+            {% endfor %}
+            <div class="d-flex justify-content-center m-4 g-2">
+                <input type="submit" class="btn btn-primary mx-2" value="Actualizar">
+                <a href={% url "profile_view" %} class="btn btn-secondary">Cancelar</a>
+            </div>
         </div>
     </form>
-</div>
 {% endblock content %}

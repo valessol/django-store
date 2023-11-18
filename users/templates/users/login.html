@@ -7,11 +7,16 @@
 {% block header_subtitle %}{% endblock header_subtitle %}
 
 {% block content %}
-<form action={% url "login" %} method="POST">
-    {% csrf_token %}
-    <table>
-        {{form}}
-    </table>
-    <input type="submit" value="Iniciar Sesion">
+<form action={% url "login" %} class="row m-5" method="POST">
+    <div class="col-4 m-auto">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label for=""  class="fw-bold mt-2 mb-1">{{field.label}}:</label>
+                {{field}}
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary m-2" value="Iniciar Sesion">
+    </div>
 </form>
 {% endblock content %}

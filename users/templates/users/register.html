@@ -7,11 +7,16 @@
 {% block header_subtitle %}{% endblock header_subtitle %}
 
 {% block content %}
-<form action={% url "register" %} method="POST">
-    {% csrf_token %}
-    <table>
-        {{form}}
-    </table>
-    <input type="submit" value="Registrarse">
+<form action={% url "register" %} class="row m-5" method="POST">
+    <div class="col-8 m-auto">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label for="">{{field.label}}:</label>
+                {{field}}
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary m-2" value="Registrarse">
+    </div>
 </form>
 {% endblock content %}

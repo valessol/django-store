@@ -9,6 +9,11 @@ class CreateEntryForm(forms.Form):
     image = forms.ImageField(label='Imagen')
     category = forms.CharField(label='Categoría')
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.visible_fields():
+            form.field.widget.attrs['class'] = 'form-control'
+    
     class Meta:
         model = BlogEntry
         fields = ['title', 'description', 'image', 'category']
@@ -23,8 +28,20 @@ class EditEntryForm(forms.Form):
         fields = ['title', 'description', 'image']
         
 class AddCommentForm(forms.Form):
-    comment = forms.CharField(max_length=300, widget=forms.Textarea)
+    comment = forms.CharField(max_length=300)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # for form in self.visible_fields():
+        #     form.field.widget.attrs['class'] = 'form-control'
+        self.fields['comment'].widget.attrs['class'] = 'form-control'
+        self.fields['comment'].widget.attrs['placeholder'] = '¡Únete a la discusión!'
+        self.fields['comment'].widget.attrs['rows'] = 3
+        self.fields['comment'].widget.attrs['cols'] = 3
     
     class Meta:
         model = Comment
         fields = ['comment']
+        labels = {
+            'comment': None
+        }

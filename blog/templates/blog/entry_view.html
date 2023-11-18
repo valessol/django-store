@@ -11,7 +11,7 @@
             <article>
                 <header class="mb-4">
                     <h1 class="fw-bolder mb-1">{{entry.title}}</h1>
-                    <div class="text-muted fst-italic mb-2">{{entry.created_at}} por {{entry.userdata.username}}</div>
+                    <div class="text-muted fst-italic mb-2">{{entry.created_at}} por {{entry.userdata.user.username}}</div>
                     <!-- Post categories-->
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{entry.category}}</a>
                 </header>
@@ -34,28 +34,14 @@
                         {% if request.user.is_authenticated %}
                             <form class="mb-4" action="" method="POST">
                                 {% csrf_token %}
-                                <table>
-                                    {{form}}
-                                </table>
+                                <div class="form-group">
+                                    {{form.comment}}
+                                </div>
                                 <input type="submit" class="btn btn-primary m-2" value="Enviar">
                             </form>
                         {% else %}
                             <p class="text-center text-black-50">Inicia sesión para dejar un comentario</p>
                         {% endif %}
-                        {% comment %} <form action="" class="mb-4" method="POST">
-                            {{form}}
-                            <input type="submit" value="Enviar">
-                        </form> {% endcomment %}
-                        {% comment %} <form action="" class="mb-4">
-                            <textarea
-                                class="form-control"
-                                name="comment"
-                                placeholder="Únete a la discusión!"
-                                rows="3"
-                                aria-label="Dejar comentario"
-                            />
-                            <input type="submit" class="btn btn-primary" value="Enviar" />
-                          </form> {% endcomment %}
                         <!-- Comment with nested comments-->
                         {% if comments %}
                         {% for comment in comments %}
@@ -72,9 +58,9 @@
                                     <div class="fw-bold">{{comment.userdata.user.username}}</div>
                                     {{comment.comment}}
                                     <div class="d-flex">
-                                        <a href="" class="text-muted mx-2">Responder</a>
+                                        {% comment %} <a href="" class="text-muted mx-2">Responder</a> {% endcomment %}
                                         {% if comment.userdata.user.username == request.user.username %}
-                                            <span> | </span>
+                                            {% comment %} <span> | </span> {% endcomment %}
                                             <a href={% url "delete_comment" comment.id %} class="text-muted mx-2">Eliminar</a>
                                         {% endif %}
                                     </div>
