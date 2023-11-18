@@ -3,6 +3,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.urls import reverse_lazy
 
 from blog.models import BlogEntry
@@ -14,6 +15,15 @@ class EntriesList(ListView):
     model = BlogEntry
     context_object_name = 'entries_list'
     template_name = 'blog/index.html'
+    
+    def dispatch(self, *args, **kwargs):
+        try:
+            user = self.request.user
+            UserData.objects.get(user=user)
+        except:
+            logout(self.request)
+            
+        return super().dispatch(*args, **kwargs)
     
     def get_queryset(self):
         search = self.request.GET.get('search', '')
@@ -137,34 +147,34 @@ def entry_view(request, pk):
 
     return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments, 'form': form})
 
-class EntryView(FormView):
-    template_name = 'blog/entry_view.html'
-    form_class = AddCommentForm
+# class EntryView(FormView):
+#     template_name = 'blog/entry_view.html'
+#     form_class = AddCommentForm
 
-    def form_valid(self, form):
-        if self.request.method == 'POST':
-            cleaned_data = form.cleaned_data
-            comment = cleaned_data.get('comment')
-            blogentry = self.get_context_data().get('entry')
-            userdata = UserData.objects.filter(user__username=self.request.user)[0]
-            new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
-            new_comment.save()
+#     def form_valid(self, form):
+#         if self.request.method == 'POST':
+#             cleaned_data = form.cleaned_data
+#             comment = cleaned_data.get('comment')
+#             blogentry = self.get_context_data().get('entry')
+#             userdata = UserData.objects.filter(user__username=self.request.user)[0]
+#             new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
+#             new_comment.save()
             
-            userdata.comments += 1
-            userdata.save()
-        if self.request.method == 'GET':
-            form.fields['comment'] = ''
-        return super().form_valid(form)
+#             userdata.comments += 1
+#             userdata.save()
+#         if self.request.method == 'GET':
+#             form.fields['comment'] = ''
+#         return super().form_valid(form)
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        entry = BlogEntry.objects.get(id=self.kwargs.get('pk'))
-        context['entry'] = entry
-        context['is_owner '] = self.request.user.username == entry.userdata.username
-        context['related_entries'] = BlogEntry.objects.filter(category=entry.category)
-        context['comments'] = Comment.objects.all()
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         entry = BlogEntry.objects.get(id=self.kwargs.get('pk'))
+#         context['entry'] = entry
+#         context['is_owner '] = self.request.user.username == entry.userdata.username
+#         context['related_entries'] = BlogEntry.objects.filter(category=entry.category)
+#         context['comments'] = Comment.objects.all()
 
-        return context
+#         return context
     
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
@@ -183,4 +193,6 @@ class DeleteEntry(LoginRequiredMixin, DeleteView):
             userdata.save()
             
         return super().dispatch(*args, **kwargs)
+    
+
     
