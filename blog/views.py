@@ -37,9 +37,13 @@ class EntriesList(ListView):
         context = super().get_context_data()
         categories = []
         entries = self.model.objects.all()
+        has_search = False
+        if self.request.GET.get('search', ''):
+            has_search = True
         for entry in entries:
             categories.append(entry.category)
         context['categories'] = categories
+        context['has_search'] = has_search
         return context
     
 class CreateEntry(LoginRequiredMixin, FormView):
@@ -108,15 +112,12 @@ def edit_entry(request, pk):
                 cleaned_data = form.cleaned_data
                 description = cleaned_data.get('description')
                 image = cleaned_data.get('image')
-                remove_image = request.POST.get('image-clear')
 
                 if description:
                     entry.description = description
                 if image:
                     entry.image = image
-                if remove_image:
-                    entry.image = ''
- 
+                
                 entry.title = cleaned_data.get('title')
                 entry.save()
                 return redirect('entries')
@@ -124,8 +125,9 @@ def edit_entry(request, pk):
     
 def entry_view(request, pk):
     entry = BlogEntry.objects.get(id=pk)
-    is_owner = request.user.username == entry.userdata.username
+    is_owner = request.user.username == entry.userdata.user.username
     related_entries = BlogEntry.objects.filter(category=entry.category)
+    print(entry, related_entries)
     
     form = AddCommentForm()
     
@@ -142,6 +144,7 @@ def entry_view(request, pk):
             
             userdata.comments += 1
             userdata.save()
+            form = AddCommentForm()
         
     comments = Comment.objects.filter(blogentry=entry)
 

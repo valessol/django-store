@@ -104,23 +104,26 @@
                 />
                   <input type="submit" class="btn btn-primary" value="Buscar" />
                 </form>
+                {% if has_search %}
+                  <a href={% url "entries" %} class="mt-2">Limpiar Búsqueda</a>
+                {% endif %}
             </div>
           </div>
-          <!-- Categories widget-->
+          {% comment %} <!-- Categories widget-->
           <div class="card mb-4">
-            <div class="card-header">Categories</div>
+            <div class="card-header">Categorías</div>
             <div class="card-body">
               <div class="row">
                 <div class="col-sm-6">
                   <ul class="list-unstyled mb-0">
                     {% for category in categories %}
-                      <li><a href="">category</a></li>
+                      <li><a href={% url 'entries' category %}>{{category}}</a></li>
                     {% endfor %}
                   </ul>
                 </div>
               </div>
             </div>
-          </div>
+          </div> {% endcomment %}
           <!-- Side widget-->
           <div class="card mb-4">
             <div class="card-header">Side Widget</div>
