@@ -20,10 +20,5 @@ class BlogEntry(models.Model):
     def save(self, *args, **kwargs):
         regex_pattern = re.compile(r'<.*?>')
         self.review = re.sub(regex_pattern, '', self.description)[:48] + '...'
-        print('description', self.description)
-        print('review', self.review)
         super().save(*args, **kwargs)
     
-    def get_review(description):
-        regex_pattern = re.compile(r'<.*?>')
-        return re.sub(regex_pattern, '', description)[:48] + '...'

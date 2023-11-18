@@ -1,4 +1,3 @@
-from typing import Any
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.edit import DeleteView, FormView
@@ -23,6 +22,15 @@ class EntriesList(ListView):
         else:
             entries_list = self.model.objects.all()
         return entries_list
+    
+    def get_context_data(self):
+        context = super().get_context_data()
+        categories = []
+        entries = self.model.objects.all()
+        for entry in entries:
+            categories.append(entry.category)
+        context['categories'] = categories
+        return context
     
 class CreateEntry(LoginRequiredMixin, FormView):
     template_name = 'blog/create_entry.html'
@@ -109,49 +117,43 @@ def entry_view(request, pk):
     is_owner = request.user.username == entry.userdata.username
     related_entries = BlogEntry.objects.filter(category=entry.category)
     
-    # form = AddCommentForm()
+    form = AddCommentForm()
     
     if request.method == 'POST':
-    #     form = AddCommentForm(request.POST)
-    #     if form.is_valid():
-    #         cleaned_data = form.cleaned_data
-        comment = request.POST.get('comment')
-        print(comment)
-        blogentry = entry
-        userdata = UserData.objects.filter(user__username=request.user)[0]
-        new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
-        new_comment.save()
+        form = AddCommentForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            comment = cleaned_data.get('comment')
+            print(comment)
+            blogentry = entry
+            userdata = UserData.objects.filter(user__username=request.user)[0]
+            new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
+            new_comment.save()
+            
+            userdata.comments += 1
+            userdata.save()
         
-        userdata.comments += 1
-        userdata.save()
-        
-    comments = Comment.objects.all()
+    comments = Comment.objects.filter(blogentry=entry)
 
-    return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments})
+    return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments, 'form': form})
 
 class EntryView(FormView):
     template_name = 'blog/entry_view.html'
     form_class = AddCommentForm
-    success_url = '/'
 
     def form_valid(self, form):
-        cleaned_data = form.cleaned_data
-        description = cleaned_data.get('description')
-        title = cleaned_data.get('title')
-        image = cleaned_data.get('image')
-        category = cleaned_data.get('category')
-        userdata = UserData.objects.filter(user__username=self.request.user)[0]
-        entry = BlogEntry(
-            title=title, 
-            description=description, 
-            image=image, 
-            category=category, 
-            userdata=userdata
-        )
-        entry.save()
-        
-        userdata.entries += 1
-        userdata.save()
+        if self.request.method == 'POST':
+            cleaned_data = form.cleaned_data
+            comment = cleaned_data.get('comment')
+            blogentry = self.get_context_data().get('entry')
+            userdata = UserData.objects.filter(user__username=self.request.user)[0]
+            new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
+            new_comment.save()
+            
+            userdata.comments += 1
+            userdata.save()
+        if self.request.method == 'GET':
+            form.fields['comment'] = ''
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
@@ -163,6 +165,7 @@ class EntryView(FormView):
         context['comments'] = Comment.objects.all()
 
         return context
+    
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
     model = BlogEntry

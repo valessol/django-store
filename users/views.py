@@ -1,25 +1,27 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, login as django_login, logout
 from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 
-from users.forms import RegisterForm, EditForm
+from users.forms import RegisterForm, EditForm, LoginForm
 from users.models import UserData
+from blog.models import BlogEntry
 
 def login(request):
-    form = AuthenticationForm()
-    # crear un form que herede del AuthenticationAForm para pisar los labels
+    form = LoginForm()
+
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             
             django_login(request, user)
-            UserData.objects.get_or_create(user=request.user)
-            print('userdata', UserData.objects.all())          
+            UserData.objects.get_or_create(user=request.user)     
             return redirect('entries')
     return render(request, 'users/login.html', {'form': form})
 
@@ -30,13 +32,14 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            # aca deberia guardar el user en la otra db
             return redirect('login')
             
     return render(request, 'users/register.html', {'form': form})
 
 def profile_view(request):
-    return render(request, 'users/profile_view.html')
+    userdata = UserData.objects.filter(user=request.user)
+    entries = BlogEntry.objects.filter(userdata=userdata[0])
+    return render(request, 'users/profile_view.html', {'entries': entries})
 
 def profile_edit(request):
     user_data = request.user.userdata
@@ -61,3 +64,16 @@ def profile_edit(request):
 class ChangePassword(PasswordChangeView):
     template_name = 'users/change_password.html'
     success_url = reverse_lazy('profile_view')
+    
+class ProfileDelete(LoginRequiredMixin, DeleteView):
+    model = UserData
+    template_name = 'users/profile_delete.html'
+    success_url = reverse_lazy('entries')
+    
+    def delete(self, request, *args, **kwargs):
+        user = User.objects.filter(id=self.kwargs.get('pk'))
+        logout(request)
+        user.delete()
+        
+        return super().delete()
+
