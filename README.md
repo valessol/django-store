@@ -28,11 +28,11 @@ Blog realizado en Python con Django, como parte del proyecto final del curso "Py
 ### App de blog y comentarios
 
 Todos los usuarios, logueados o no, tienen acceso a la vista principal del blog, así como al detalle de las entradas. Sin embargo, para acceder a ciertas funcionalidades, éstos deberán estar registrados y logueados. Éstas funcionalidades son:
-    - Creación de entradas nuevas (con campo de texto enriquecido)
-    - Edición de entradas (un usuario sólo podrá editar si él mismo es el autor de la entrada)
-    - Eliminación de entradas (sólo podrá eliminar una entrada quien la haya creado)
-    - Comentar una entrada
-    - Eliminar el comentario (sólo si el usuario es quien lo ha realizado)
+- Creación de entradas nuevas (con campo de texto enriquecido)
+- Edición de entradas (un usuario sólo podrá editar si él mismo es el autor de la entrada)
+- Eliminación de entradas (sólo podrá eliminar una entrada quien la haya creado)
+- Comentar una entrada
+- Eliminar el comentario (sólo si el usuario es quien lo ha realizado)
 
 Por su parte, dentro de cada entrada se puede visualizar un apartado de "Entradas relacionadas", el cuál se basa en mostrar aquellas que pertenezcan a la misma categoría que la entrada a la que se ha accedido.
 
