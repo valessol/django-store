@@ -1,0 +1,122 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}{{entry.name}}{% endblock title %}
+
+{% block header %}{% endblock header %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <article>
+                <header class="mb-4">
+                    <h1 class="fw-bolder mb-1">{{entry.title}}</h1>
+                    <div class="text-muted fst-italic mb-2">{{entry.created_at}} por {{entry.userdata.user.username}}</div>
+                    <!-- Post categories-->
+                    <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{entry.category}}</a>
+                </header>
+                <!-- Preview image figure-->
+                {% if entry.image %}
+                    <figure class="mb-4">
+                        <img class="img-fluid rounded" src={{entry.image.url}} alt={{entry.title}} />
+                    </figure>
+                {% endif %}
+                <!-- Post content-->
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">{{entry.description | safe}}</p>
+                </section>
+            </article>
+            <!-- Comments section-->
+            <section class="mb-5">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <!-- Comment form-->
+                        {% if request.user.is_authenticated %}
+                            <form class="mb-4" action="" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{form.comment}}
+                                </div>
+                                <input type="submit" class="btn btn-primary m-2" value="Enviar">
+                            </form>
+                        {% else %}
+                            <p class="text-center text-black-50">Inicia sesión para dejar un comentario</p>
+                        {% endif %}
+                        <!-- Comment with nested comments-->
+                        {% if comments %}
+                        {% for comment in comments %}
+                            <div class="d-flex mb-4">
+                                <!-- Parent comment-->
+                                <div class="flex-shrink-0">
+                                    {% if comment.userdata.avatar %}
+                                        <img class="rounded-circle" src={{comment.userdata.avatar.url}} height="50" width="50" alt="avatar" />
+                                    {% else %}
+                                        <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="avatar" />
+                                    {% endif %}
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fw-bold">{{comment.userdata.user.username}}</div>
+                                    {{comment.comment}}
+                                    <div class="d-flex">
+                                        {% comment %} <a href="" class="text-muted mx-2">Responder</a> {% endcomment %}
+                                        {% if comment.userdata.user.username == request.user.username %}
+                                            {% comment %} <span> | </span> {% endcomment %}
+                                            <a href={% url "delete_comment" comment.id %} class="text-muted mx-2">Eliminar</a>
+                                        {% endif %}
+                                    </div>
+                                    {% comment %} <!-- Child comment 1-->
+                                    <div class="d-flex mt-4">
+                                        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">Commenter Name</div>
+                                            And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+                                        </div>
+                                    </div>
+                                    <!-- Child comment 2-->
+                                    <div class="d-flex mt-4">
+                                        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">Commenter Name</div>
+                                            When you put money directly to a problem, it makes a good headline.
+                                        </div>
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% else %}
+                            <p class="text-center text-black-50">Aún no hay comentarios.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            {% if is_owner %}
+                <div class='mb-4'>
+                    <a class="btn btn-primary" href={% url "edit_entry" entry.id %}>Editar Entrada</a>
+                </div>
+            {% endif %}
+            
+            <div class="card mb-4">
+                <div class="card-header">Entradas relacionadas</div>
+                <div class="card-body">
+                    <div class="row">
+                            <ul class="list-unstyled mb-0">
+                                {% if related_entries %}
+                                    {% for related_entry in related_entries %}
+                                        <li><a href={% url "entry" related_entry.id %}>{{related_entry.title}}</a></li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No se encontraron entradas relacionadas</p>
+                                {% endif %}
+                            </ul>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+       

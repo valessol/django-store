@@ -1,0 +1,25 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}Editar perfil{% endblock title %}
+
+{% block header_title %}Editar Perfil{% endblock header_title %}
+
+{% block header_subtitle %}{% endblock header_subtitle %}
+
+{% block content %}
+    <form action={% url "profile_edit" %} method="POST" class="row m-5" enctype="multipart/form-data">
+        <div class="col-8 m-auto">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <label for="" class="fw-bold mt-2 mb-1">{{field.label}}:</label>
+                    {{field}}
+                </div>
+            {% endfor %}
+            <div class="d-flex justify-content-center m-4 g-2">
+                <input type="submit" class="btn btn-primary mx-2" value="Actualizar">
+                <a href={% url "profile_view" %} class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

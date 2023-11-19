@@ -1,0 +1,30 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}Nueva Entrada{% endblock title %}
+
+{% block header %}{% endblock header %}
+
+{% block content %}
+   <header class="container mt-5 mb-4">
+        <h1 class="fw-bolder mb-1">Nueva entrada de Blog</h1> 
+    </header>
+    
+    <main class="container mt-5 mb-4">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <form action={% url "create_entry" %} method="POST"  enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    <table>
+                        {{form.media}}
+                        {{form}}
+                    </table>
+                    <div class="d-flex justify-content-center m-2 g-2">
+                        <input class="btn btn-primary btn-lg m-2 px-5 justify-content-end" type="submit" value='Agregar'/>
+                        <a href={% url "entries" %} class="btn btn-secondary btn-lg m-2 px-5">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock content %}
+       

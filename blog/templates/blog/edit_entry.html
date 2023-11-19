@@ -1,0 +1,31 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}Editar Entrada{% endblock title %}
+
+{% block header %}{% endblock header %}
+
+{% block content %}
+   <header class="container mt-5 mb-4">
+        <h1 class="fw-bolder mb-1">Editar entrada de Blog</h1> 
+    </header>
+    
+    <main class="container mt-5 mb-4">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <form action="" method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    <table>
+                        {{form.media}}
+                        {{form}}
+                    </table>
+                    <div class="d-flex justify-content-center m-2 g-2">
+                        <input type="submit" class="btn btn-primary mx-2" value="Actualizar">
+                        <a href={% url "entry" entry_id %} class="btn btn-secondary">Cancelar</a>
+                        <a href={% url "delete_entry" entry_id %} class="btn btn-danger mx-2">Eliminar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock content %}
+       
