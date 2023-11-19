@@ -1,28 +1,75 @@
-# Proyecto Django Store
+<div align="center">
 
-## App Store
+# Proyecto Django Blog
 
-### Carga de productos a mostrar
+Blog realizado en Python con Django, como parte del proyecto final del curso "Python" de Coderhouse.
 
-Existen dos productos cargados en la base de datos de sqlite3, sin embargo, pueden añadirse más productos a partir del formulario correspondiente, el cual se encuentra en el menú 'Agregar' de la barra de navegación.
+</div>
 
-### Carga de productos en el carrito
+**Tabla de contenidos**
 
-Es posible que un cliente agregue productos al carrito mediante el formulario que se encuentra accediendo por en el mismo lugar que el formulario anterior.
+- [Funcionalidades](#funcionalidades)
+    - [App de usuarios](#app-de-usuarios)
+    - [App de blog y comentarios](#app-de-blog-y-comentarios)
+    - [Implementaciones del proyecto](#implementaciones-del-proyecto)
+- [Dependencias utilizadas](#dependencias-utilizadas)
+- [Instalación](#instalación)
 
-Los productos del carrito se agregan, pero no existe aún una vista que permita renderizarlos.
+## Funcionalidades
 
-Por otro lado, la idea final sería añadir estos productos desde un botón directamente desde la vista de detalle del producto, y no mediante formulario, el cual se realiza en este caso a los fines de cumplir la consigna del desafío.
+### App de usuarios
 
-### Formulario de consultas y sugerencias
+- Registro y login de usuarios mediante autenticación con Django
+- Vista de perfil de usuario con el detalle de cantidad de entradas y comentarios realizados, con los respectivos títulos y links de las entradas afectadas en cada caso.
+- Edición de perfil de usuario, pudiendo incorporar biografía y avatar si lo desea. El avatar una vez añadido, puede eliminarse también.
+- Edición de password separada del resto de campos editables.
+- Eliminación de cuenta de usuario, con la respectiva eliminación de las entradas y comentarios por él mismo realizados.
 
-Permite a los clientes dejar consultas y/o sugerencias relacionadas al sitio.
-Se accede mediante el menú 'Contacto', en la barra de navegación.
+### App de blog y comentarios
 
-## Características a destacar de este proyecto
+Todos los usuarios, logueados o no, tienen acceso a la vista principal del blog, así como al detalle de las entradas. Sin embargo, para acceder a ciertas funcionalidades, éstos deberán estar registrados y logueados. Éstas funcionalidades son:
+    - Creación de entradas nuevas (con campo de texto enriquecido)
+    - Edición de entradas (un usuario sólo podrá editar si él mismo es el autor de la entrada)
+    - Eliminación de entradas (sólo podrá eliminar una entrada quien la haya creado)
+    - Comentar una entrada
+    - Eliminar el comentario (sólo si el usuario es quien lo ha realizado)
+
+Por su parte, dentro de cada entrada se puede visualizar un apartado de "Entradas relacionadas", el cuál se basa en mostrar aquellas que pertenezcan a la misma categoría que la entrada a la que se ha accedido.
+
+Finalmente, en la pantalla de inicio se observa el listado de entradas, con un apartado de búsqueda por título; y el acceso a la vista "About" desde la barra de navegación.
+
+### Panel de admin
+
+Registrando un superusuario, es posible acceder al panel de admin de Django y acceder a toda la información de los modelos.
+
+## Implementaciones del proyecto
 
 - Herencia de HTML
-- Formularios mediante HTML
-- Formularios de django
-- Formulario de búsqueda de productos
+- Formularios: 
+    - mediante HTML
+    - que heredan de los modelos de Form de django
+    - de búsqueda
+    - con campos de texto enriquecido
 - Arquitectura MVT
+- Uso de clases basadas en vistas
+- Uso de decoradores y mixins
+- Registro de los modelos en el panel de admin de Django
+
+## Dependencias utilizadas
+
+- Django
+- django-ckeditor
+- Pillow
+
+## Instalación
+
+```
+git clone https://github.com/valessol/django-store.git
+cd django-store
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+#### Autor: Valeria Silveira
