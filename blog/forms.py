@@ -1,5 +1,6 @@
 from django import forms
 from ckeditor.fields import RichTextFormField
+
 from blog.models import BlogEntry
 from comments.models import Comment
 
@@ -32,8 +33,6 @@ class AddCommentForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # for form in self.visible_fields():
-        #     form.field.widget.attrs['class'] = 'form-control'
         self.fields['comment'].widget.attrs['class'] = 'form-control'
         self.fields['comment'].widget.attrs['placeholder'] = '¡Únete a la discusión!'
         self.fields['comment'].widget.attrs['rows'] = 3

@@ -1,13 +1,9 @@
-from typing import Any
-from django.shortcuts import render, redirect
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
 from comments.models import Comment
 from users.models import UserData
-from blog.models import BlogEntry
 
 class DeleteComment(LoginRequiredMixin, DeleteView):
     model = Comment
@@ -32,12 +28,3 @@ class DeleteComment(LoginRequiredMixin, DeleteView):
             userdata.save()
             
         return super().dispatch(*args, **kwargs)
-    
-    # def get_success_url(self) -> str:
-    #     # comment = self.model.objects.filter()
-    #     print(self.kwargs.get("pk"))
-    #     print(self.kwargs)
-    #     self.success_url = f'entry/{self.kwargs.get("pk")}'
-    #     #self.success_url = reverse_lazy(f'entry/{self.kwargs.get("pk")}')
-    #     return self.success_url
-    #     #return super().get_success_url()

@@ -70,33 +70,6 @@ class CreateEntry(LoginRequiredMixin, FormView):
         userdata.entries += 1
         userdata.save()
         return super().form_valid(form)
-    
-    
-# @login_required
-# def create_entry(request):
-#     form = CreateEntryForm()
-#     if request.method == 'POST':
-#         form = CreateEntryForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             cleaned_data = form.cleaned_data
-#             description = cleaned_data.get('description')
-#             title = cleaned_data.get('title')
-#             image = cleaned_data.get('image')
-#             category = cleaned_data.get('category')
-#             userdata = UserData.objects.filter(user__username=request.user)[0]
-#             entry = BlogEntry(
-#                 title=title, 
-#                 description=description, 
-#                 image=image, 
-#                 category=category, 
-#                 userdata=userdata
-#             )
-#             entry.save()
-            
-#             userdata.entries += 1
-#             userdata.save()
-#             return redirect('entries')
-#     return render(request, 'blog/create_entry.html', {'form': form})
 
 @login_required
 def edit_entry(request, pk):
@@ -126,8 +99,11 @@ def edit_entry(request, pk):
 def entry_view(request, pk):
     entry = BlogEntry.objects.get(id=pk)
     is_owner = request.user.username == entry.userdata.user.username
-    related_entries = BlogEntry.objects.filter(category=entry.category)
-    print(entry, related_entries)
+    entries_by_category = BlogEntry.objects.filter(category=entry.category)
+    related_entries = []
+    for entry_cat in entries_by_category:
+        if entry_cat.id != entry.id:
+            related_entries.append(entry_cat)
     
     form = AddCommentForm()
     
@@ -149,36 +125,6 @@ def entry_view(request, pk):
     comments = Comment.objects.filter(blogentry=entry)
 
     return render(request, 'blog/entry_view.html', {'entry': entry, 'is_owner': is_owner, 'related_entries': related_entries, 'comments': comments, 'form': form})
-
-# class EntryView(FormView):
-#     template_name = 'blog/entry_view.html'
-#     form_class = AddCommentForm
-
-#     def form_valid(self, form):
-#         if self.request.method == 'POST':
-#             cleaned_data = form.cleaned_data
-#             comment = cleaned_data.get('comment')
-#             blogentry = self.get_context_data().get('entry')
-#             userdata = UserData.objects.filter(user__username=self.request.user)[0]
-#             new_comment = Comment(blogentry=blogentry, userdata=userdata, comment=comment)
-#             new_comment.save()
-            
-#             userdata.comments += 1
-#             userdata.save()
-#         if self.request.method == 'GET':
-#             form.fields['comment'] = ''
-#         return super().form_valid(form)
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         entry = BlogEntry.objects.get(id=self.kwargs.get('pk'))
-#         context['entry'] = entry
-#         context['is_owner '] = self.request.user.username == entry.userdata.username
-#         context['related_entries'] = BlogEntry.objects.filter(category=entry.category)
-#         context['comments'] = Comment.objects.all()
-
-#         return context
-    
     
 class DeleteEntry(LoginRequiredMixin, DeleteView):
     model = BlogEntry

@@ -105,7 +105,7 @@
                             <ul class="list-unstyled mb-0">
                                 {% if related_entries %}
                                     {% for related_entry in related_entries %}
-                                        <li><a href={% url "entry" related_entry.id %}>{{entry.title}}</a></li>
+                                        <li><a href={% url "entry" related_entry.id %}>{{related_entry.title}}</a></li>
                                     {% endfor %}
                                 {% else %}
                                     <p>No se encontraron entradas relacionadas</p>
